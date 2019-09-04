@@ -1,0 +1,160 @@
+#ifndef _SOFT_PI_H
+#define _SOFT_PI_H
+
+#include "softPiMacros.h"
+#include "softPiPigpioDefs.h"
+
+#include <stdint.h>
+#include <pthread.h>
+
+#define SOFT_PI_VERSION 1
+
+
+int sim_gpioInitialise(void);
+void sim_gpioTerminate(void);
+int sim_gpioSetMode(unsigned gpio, unsigned mode);
+int sim_gpioGetMode(unsigned gpio);
+int sim_gpioSetPullUpDown(unsigned gpio, unsigned pud);
+int sim_gpioRead(unsigned gpio);
+int sim_gpioWrite(unsigned gpio, unsigned level);
+int sim_gpioPWM(unsigned user_gpio, unsigned dutycycle);
+int sim_gpioGetPWMdutycycle(unsigned user_gpio);
+int sim_gpioSetPWMrange(unsigned user_gpio, unsigned range);
+int sim_gpioGetPWMrange(unsigned user_gpio);
+int sim_gpioGetPWMrealRange(unsigned user_gpio);
+int sim_gpioSetPWMfrequency(unsigned user_gpio, unsigned frequency);
+int sim_gpioGetPWMfrequency(unsigned user_gpio);
+int sim_gpioServo(unsigned user_gpio, unsigned pulsewidth);
+int sim_gpioGetServoPulsewidth(unsigned user_gpio);
+int sim_gpioSetAlertFunc(unsigned user_gpio, gpioAlertFunc_t f);
+int sim_gpioNotifyOpen(void);
+int sim_gpioNotifyOpenWithSize(int bufSize);
+int sim_gpioNotifyBegin(unsigned handle, uint32_t bits);
+int sim_gpioNotifyPause(unsigned handle);
+int sim_gpioNotifyClose(unsigned handle);
+int sim_gpioWaveClear(void);
+int sim_gpioWaveAddNew(void);
+int sim_gpioWaveAddGeneric(unsigned numPulses, gpioPulse_t *pulses);
+int sim_gpioWaveCreate(void);
+int sim_gpioWaveDelete(unsigned wave_id);
+int sim_gpioWaveTxSend(unsigned wave_id, unsigned wave_mode);
+int sim_gpioWaveChain(char *buf, unsigned bufSize);
+int sim_gpioWaveTxAt(void);
+int sim_gpioWaveTxBusy(void);
+int sim_gpioWaveTxStop(void);
+int sim_gpioWaveGetMicros(void);
+int sim_gpioWaveGetHighMicros(void);
+int sim_gpioWaveGetMaxMicros(void);
+int sim_gpioWaveGetPulses(void);
+int sim_gpioWaveGetHighPulses(void);
+int sim_gpioWaveGetMaxPulses(void);
+int sim_gpioWaveGetCbs(void);
+int sim_gpioWaveGetHighCbs(void);
+int sim_gpioWaveGetMaxCbs(void);
+int sim_gpioSerialReadOpen(unsigned user_gpio, unsigned baud, unsigned data_bits);
+int sim_gpioSerialReadInvert(unsigned user_gpio, unsigned invert);
+int sim_gpioSerialRead(unsigned user_gpio, void *buf, size_t bufSize);
+int sim_gpioSerialReadClose(unsigned user_gpio);
+int sim_i2cOpen(unsigned i2cBus, unsigned i2cAddr, unsigned i2cFlags);
+int sim_i2cClose(unsigned handle);
+int sim_i2cWriteQuick(unsigned handle, unsigned bit);
+int sim_i2cWriteByte(unsigned handle, unsigned bVal);
+int sim_i2cReadByte(unsigned handle);
+int sim_i2cWriteByteData(unsigned handle, unsigned i2cReg, unsigned bVal);
+int sim_i2cWriteWordData(unsigned handle, unsigned i2cReg, unsigned wVal);
+int sim_i2cReadByteData(unsigned handle, unsigned i2cReg);
+int sim_i2cReadWordData(unsigned handle, unsigned i2cReg);
+int sim_i2cProcessCall(unsigned handle, unsigned i2cReg, unsigned wVal);
+int sim_i2cReadBlockData(unsigned handle, unsigned i2cReg, char *buf);
+int sim_i2cReadDevice(unsigned handle, char *buf, unsigned count);
+int sim_i2cWriteDevice(unsigned handle, char *buf, unsigned count);
+void sim_i2cSwitchCombined(int setting);
+int sim_i2cSegments(unsigned handle, pi_i2c_msg_t *segs, unsigned numSegs);
+int sim_bbI2COpen(unsigned SDA, unsigned SCL, unsigned baud);
+int sim_bbI2CClose(unsigned SDA);
+int sim_bscXfer(bsc_xfer_t *bsc_xfer);
+int sim_bbSPIClose(unsigned CS);
+int sim_spiOpen(unsigned spiChan, unsigned baud, unsigned spiFlags);
+int sim_spiClose(unsigned handle);
+int sim_spiRead(unsigned handle, char *buf, unsigned count);
+int sim_spiWrite(unsigned handle, char *buf, unsigned count);
+int sim_spiXfer(unsigned handle, char *txBuf, char *rxBuf, unsigned count);
+int sim_serOpen(char *sertty, unsigned baud, unsigned serFlags);
+int sim_serClose(unsigned handle);
+int sim_serWriteByte(unsigned handle, unsigned bVal);
+int sim_serReadByte(unsigned handle);
+int sim_serWrite(unsigned handle, char *buf, unsigned count);
+int sim_serRead(unsigned handle, char *buf, unsigned count);
+int sim_serDataAvailable(unsigned handle);
+int sim_gpioTrigger(unsigned user_gpio, unsigned pulseLen, unsigned level);
+int sim_gpioSetWatchdog(unsigned user_gpio, unsigned timeout);
+int sim_gpioNoiseFilter(unsigned user_gpio, unsigned steady, unsigned active);
+int sim_gpioGlitchFilter(unsigned user_gpio, unsigned steady);
+int sim_gpioSetGetSamplesFunc(gpioGetSamplesFunc_t f, uint32_t bits);
+int sim_gpioSetTimerFunc(unsigned timer, unsigned millis, gpioTimerFunc_t f);
+pthread_t *sim_gpioStartThread(gpioThreadFunc_t f, void *userdata);
+void sim_gpioStopThread(pthread_t *pth);
+int sim_gpioStoreScript(char *script);
+int sim_gpioRunScript(unsigned script_id, unsigned numPar, uint32_t *param);
+int sim_gpioUpdateScript(unsigned script_id, unsigned numPar, uint32_t *param);
+int sim_gpioScriptStatus(unsigned script_id, uint32_t *param);
+int sim_gpioStopScript(unsigned script_id);
+int sim_gpioDeleteScript(unsigned script_id);
+int sim_gpioSetSignalFunc(unsigned signum, gpioSignalFunc_t f);
+uint32_t sim_gpioRead_Bits_0_31(void);
+uint32_t sim_gpioRead_Bits_32_53(void);
+int sim_gpioWrite_Bits_0_31_Clear(uint32_t bits);
+int sim_gpioWrite_Bits_32_53_Clear(uint32_t bits);
+int sim_gpioWrite_Bits_0_31_Set(uint32_t bits);
+int sim_gpioWrite_Bits_32_53_Set(uint32_t bits);
+int sim_gpioHardwareClock(unsigned gpio, unsigned clkfreq);
+int sim_gpioHardwarePWM(unsigned gpio, unsigned PWMfreq, unsigned PWMduty);
+int sim_gpioTime(unsigned timetype, int *seconds, int *micros);
+int sim_gpioSleep(unsigned timetype, int seconds, int micros);
+uint32_t sim_gpioDelay(uint32_t micros);
+uint32_t sim_gpioTick(void);
+unsigned sim_gpioHardwareRevision(void);
+unsigned sim_gpioVersion(void);
+int sim_gpioGetPad(unsigned pad);
+int sim_gpioSetPad(unsigned pad, unsigned padStrength);
+int sim_eventMonitor(unsigned handle, uint32_t bits);
+int sim_eventSetFunc(unsigned event, eventFunc_t f);
+int sim_eventSetFuncEx(unsigned event, eventFuncEx_t f, void *userdata);
+int sim_eventTrigger(unsigned event);
+int sim_shell(char *scriptName, char *scriptString);
+int sim_fileOpen(char *file, unsigned mode);
+int sim_fileClose(unsigned handle);
+int sim_fileWrite(unsigned handle, char *buf, unsigned count);
+int sim_fileRead(unsigned handle, char *buf, unsigned count);
+int sim_fileSeek(unsigned handle, int32_t seekOffset, int seekFrom);
+int sim_fileList(char *fpat,  char *buf, unsigned count);
+int sim_gpioCfgBufferSize(unsigned cfgMillis);
+int sim_gpioCfgDMAchannel(unsigned DMAchannel); /* DEPRECATED */
+int sim_gpioCfgDMAchannels(unsigned primaryChannel, unsigned secondaryChannel);
+int sim_gpioCfgPermissions(uint64_t updateMask);
+int sim_gpioCfgSocketPort(unsigned port);
+int sim_gpioCfgInterfaces(unsigned ifFlags);
+int sim_gpioCfgMemAlloc(unsigned memAllocMode);
+int sim_gpioCfgNetAddr(int numSockAddr, uint32_t *sockAddr);
+int sim_gpioCfgInternals(unsigned cfgWhat, unsigned cfgVal);
+uint32_t sim_gpioCfgGetInternals(void);
+int sim_gpioCfgSetInternals(uint32_t cfgVal);
+int sim_gpioCustom1(unsigned arg1, unsigned arg2, char *argx, unsigned argc);
+int sim_rawWaveAddGeneric(unsigned numPulses, rawWave_t *pulses);
+unsigned sim_rawWaveCB(void);
+rawCbs_t *sim_rawWaveCBAdr(int cbNum);
+uint32_t sim_rawWaveGetOOL(int pos);
+void sim_rawWaveSetOOL(int pos, uint32_t lVal);
+uint32_t sim_rawWaveGetOut(int pos);
+void sim_rawWaveSetOut(int pos, uint32_t lVal);
+uint32_t sim_rawWaveGetIn(int pos);
+void sim_rawWaveSetIn(int pos, uint32_t lVal);
+rawWaveInfo_t sim_rawWaveInfo(int wave_id);
+int sim_getBitInBytes(int bitPos, char *buf, int numBits);
+void sim_putBitInBytes(int bitPos, char *buf, int bit);
+double sim_time_time(void);
+void sim_time_sleep(double seconds);
+void sim_rawDumpWave(void);
+void sim_rawDumpScript(unsigned script_id);
+
+#endif
